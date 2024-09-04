@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Fixed Navigation Bar -->
+    <header>
+        <nav class="navbar">
+            <div class="navbar-logo">
+                <!--장고 템플릿 정식 작업 때 사용-->
+                <!-- <a href="{% url 'home' %}"><img src="{% static 'images/logo.png' %}" alt="Logo"></a> -->
+                <a href=""><img src="images/kurly-logo.svg"></a>
+            </div>
+            <div class="navbar-search">
+                <form action="{% url 'search' %}" method="get">
+                    <input type="text" name="q" placeholder="검색어를 입력해주세요">
+                    <button type="submit">
+                        <!--장고 템플릿 정식 작업 때 사용-->
+                        <!-- <img src="{% static 'images/search-icon.png' %}" alt="Search"> -->
+                         <img src="images/search.svg">
+                    </button>
+                </form>
+            </div>
+            <div class="navbar-links">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">로그아웃</a>
+                {% else %}
+                    <a href="{% url 'signup' %}">회원가입</a>
+                    <a href="{% url 'login' %}">로그인</a>
+                {% endif %}
+                <a href="{% url 'wishlist' %}">
+                    <!--장고 템플릿 정식 작업 때 사용-->
+                    <!-- <img src="{% static 'images/heart-icon.png' %}" alt="Wishlist"> -->
+                     <img src="images/wish.svg">
+                </a>
+                <a href="{% url 'cart' %}">
+                    <!--장고 템플릿 정식 작업 때 사용-->
+                    <!-- <img src="{% static 'images/cart-icon.png' %}" alt="Cart"> -->
+                     <img src="images/cart.svg">
+                </a>
+            </div>
+        </nav>
+        <!-- Category Menu -->
+        <nav class="category-menu">
+            <button class="category-button">카테고리</button>
+            <div class="dropdown">
+                <ul>
+                    {% for category in categories %}
+                        <li>
+                            <a href="{% url 'category' category.id %}">{{ category.name }}</a>
+                            {% if category.subcategories %}
+                                <ul class="subcategory">
+                                    {% for subcategory in category.subcategories %}
+                                        <li><a href="{% url 'category' subcategory.id %}">{{ subcategory.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main content of each page will be inserted here -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 My Kurly. All rights reserved.</p>
+    </footer>
+</body>
+</html>
