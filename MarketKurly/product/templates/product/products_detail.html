@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}product detail{% endblock %}
+
+{% block extra-style %}
+<style type="text/css">
+.custom-btn {
+    background-color: purple;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.custom-btn:hover {
+    background-color: darkviolet;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="mt-5" style="color:#09ff00">{{ object.title }}</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <a href="{{object.image.url}}">
+            <img src="{{object.image.url}}" style="width: 100%;">
+        </a>
+    </div>
+
+    <ul class="col-md-6 mt-3">
+        <p class="h4">{{object.name}}</p>
+        <p class="h2 fw-bold">{{object.price}}원&ensp;({{object.stock}}개&ensp;남음)</p> 
+        <p>판매자&emsp;{{object.owner}}</p>
+        <p>{{ object.description }}</p>
+        <div class="container-fluid">
+            <a class="btn btn-outline-secondary" href="#" role="button"><i class="fa-regular fa-heart" style="color: #B197FC;"></i></a>&emsp;
+            <a class="btn custom-btn" href="#" role="button">장바구니 담기</a>
+        </div>
+    </ul>
+</div>
+{% endblock %}

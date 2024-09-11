@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Main Category List{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{{ category.name }}의 제품들</h1>
+
+<div class="container mt-4">
+    <div class="row">
+        {% for sub in subcategory %}
+            <div class="col-3 mb-3 text-center">
+            <a href="{% url 'product:sub_category' sub.id %}" style="color:purple">{{ sub.name }}</a>
+            </div>
+        {% empty %}
+            <h3 class="text-center">상품을 준비중입니다...</h3>
+        {% endfor %}
+    </div>
+</div>
+<hr></hr>
+<div class="container text-center">
+    <div class="row">
+    {% for object in object_list %}
+    <div class="col-4 mb-2">
+        <div class="thumbnail">
+            <a href="{{ object.get_absolute_url }}">
+                <img src="{{ object.image.thumb_url }}" style="width: 180px; height: 225px; object-fit: cover;">
+                <p class="mt-2">{{ object.name }}</p>
+            </a>
+            <p>{{ object.price }}원</p>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

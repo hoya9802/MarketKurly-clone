@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Sub Category List{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{{ subcategory.name }} 상품들</h1>
+<hr></hr>
+<div class="container text-center">
+    <div class="row">
+    {% for object in object_list %}
+    <div class="col mx-3">
+        <div class="thumbnail">
+            <a href="{{ object.get_absolute_url }}">
+                <img src="{{ object.image.thumb_url }}" style="width: 180px; height: 225px; object-fit: cover;">
+                <p class="mt-2">{{ object.name }}</p>
+            </a>
+            <p>{{ object.price }}원</p>
+        </div>
+    </div>
+    {% empty %}
+    <h3 class="text-center">상품을 준비중입니다...</h3>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="container text-center">
+    <div style="padding-bottom: 20px;"></div>
+        <span>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number}}"><i class="fa-solid fa-arrow-left"></i></a>
+            {% endif %}
+            Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+            {% if page_obj.has_next %}
+                <a href="?page={{page_obj.next_page_number}}"><i class="fa-solid fa-arrow-right"></i></a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}
