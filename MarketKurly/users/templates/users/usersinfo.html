@@ -1,0 +1,43 @@
+
+<div class="usersinfo_wrapper">
+    <div class="usersinfo_container">
+
+    회원정보페이지
+    <br>
+    <br>
+    {{ user.username }}님 정보 페이지
+    <br>
+    email:{{ user.email}}
+    <br>
+    성명:
+    {{ user.last_name }}
+    {{ user.first_name }}
+    <br>
+    성별:{{ user.gender }}  (예:['O':기타] )    
+    <br>
+    생년월일:{{ user.birth }}
+    <br>
+
+    <a href="{% url 'users:logout' %}">로그아웃</a>
+
+    </div>
+</div>
+
+<style>
+
+    .usersinfo_wrapper {
+        margin-top: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+    }
+    .usersinfo_container {   
+        font-family: arial;
+        font-size: 24px;
+        margin: 1px;
+        width: 400px;
+        height: 320px;
+        outline: dashed 1px rgb(91, 89, 89);
+        text-align: center;
+        padding-right: 20px;
+    }
