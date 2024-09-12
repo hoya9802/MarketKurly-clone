@@ -1,0 +1,31 @@
+{% extends 'base.html' %} 
+
+{% load static %}
+
+{% block title %}검색 결과{% endblock %} 
+
+{% block content %}
+
+<div class="container text-center">
+    <h1>검색 결과</h1>
+
+    {% if products %}
+    <div class="row">
+        {% for product in product_list %} 
+        <div class="col-4 mb-2">
+            <div class="thumbnail">
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{{ product.image.thumb_url }}" style="width: 180px; height: 225px; object-fit: cover;">
+                    <p class="mt-2">{{ product.name }}</p>
+                </a>
+                <p>{{ product.price }}원</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>검색 결과가 없습니다.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
