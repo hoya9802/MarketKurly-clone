@@ -1,0 +1,39 @@
+<div class="wrapper">
+    <div class="container">      
+        로그아웃 성공했습니다!
+        <br>   
+        <a href="{% url 'product:index' %}">홈</a>    
+    </div>
+</div>
+   <style>
+   
+       .wrapper {
+           margin-top: 300px;
+           display: flex;
+           justify-content: center;
+           align-items: center; 
+       }
+       .container {   
+           font-family: arial;
+           font-size: 24px;
+           margin: 1px;
+           width: 410px;
+           height: 320px;
+           outline: dashed 1px rgb(91, 89, 89);
+           text-align: center;
+           padding-right: 20px;
+       }
+       .child {
+           font-family: arial;
+           font-size: 20px;
+           margin: 25px;
+           width: 300px;
+           height: 100px;
+           text-align: right;
+       }
+       .login_button {
+           background-color: #5F0080;
+           color: white;   
+       }
+   </style>
+   
