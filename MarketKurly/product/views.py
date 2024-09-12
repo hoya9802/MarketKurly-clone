@@ -59,7 +59,7 @@ class SubCategoryLV(ListView):
 
 class SearchProductLV(ListView):
     model = Products
-    template_name = 'search_results.html'
+    template_name = 'product/search_results.html'
     context_object_name = 'product_list'
 
     def get_queryset(self):
