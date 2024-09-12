@@ -3,6 +3,7 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 from .models import Products, Category
+from django.db.models import Q
 
 # Create your views here.
 class ProductLV(ListView):
@@ -53,3 +54,19 @@ class SubCategoryLV(ListView):
         
         context['subcategory'] = subcategory
         return context
+
+
+
+class SearchProductLV(ListView):
+    model = Products
+    template_name = 'search_results.html'
+    context_object_name = 'product_list'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Products.objects.filter(
+                Q(name__icontains=query) | Q(description__icontains=query)
+            )
+        else:
+            return Products.objects.all()
