@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<header class="page-header">
+    <h1>장바구니</h1>
+</header>
+
+<div class="container">
+    <div class="cart-items">
+        <form method="post" action="{% url 'cart:delete_selected' %}">
+            {% csrf_token %}
+            <div class="controls">
+                <div class="select-all">
+                    <label>
+                        <input type="checkbox" id="select-all"> 전체선택
+                    </label>
+                </div>
+                <button type="submit" id="delete-selected" name="delete_selected" class="delete-selected">전체삭제</button>
+            </div>
+
+            {% if cart_items %}
+            {% for item in cart_items %}
+            <div class="item">
+                <div class="item-header">
+                    <input type="checkbox" name="selected_items" value="{{ item.id }}" class="item-checkbox">
+                    <div class="item-name">{{ item.product.name }}</div>
+                </div>
+                <div class="item-body">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-image">
+                    <div class="item-info">
+                        <div class="item-price">{{ item.product.price }}원</div>
+                        <div class="quantity-controls">
+                            <form method="post" action="{% url 'cart:update_quantity' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="decrease">-</button>
+                                <span class="quantity">{{ item.quantity }}</span>
+                                <button type="submit" name="action" value="increase">+</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-cart">
+                장바구니가 비어 있습니다.
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="total-amount">
+        <h2>총금액</h2>
+        <ul>
+            {% for item in cart_items %}
+            <li>{{ item.product.name }} <p></p> {{ item.product.price }}원 x {{ item.quantity }} = {{ item.total_price }}원</li>
+            {% endfor %}
+        </ul>
+        <h3>총합계: {{ total_price }}원</h3>
+    </div>
+</div>
+
+<style>
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.page-header {
+    position: fixed;
+    top: 160px; /* 수정: header를 화면 상단에 고정 */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background-color: #fff; /* 수정: header 배경 색상 */
+    border-bottom: 2px solid #ddd;
+    z-index: 1000;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 100px 20px 20px; /* 수정: header 높이만큼 패딩 조정 */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cart-items {
+    width: 70%;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.select-all {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-all label {
+    font-size: 16px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.delete-selected {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    margin-left: 10px;
+}
+
+.delete-selected:hover {
+    background-color: #f0f0f0;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.item-checkbox {
+    margin-right: 10px;
+}
+
+.item-name {
+    font-size: 16px;
+}
+
+.item-body {
+    display: flex;
+    align-items: center;
+}
+
+.item-image {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.item-price {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls form {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-controls button {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    border: 1px solid black;
+    background-color: #fff;
+    cursor: pointer;
+    color: #333;
+    margin: 0 5px;
+}
+
+.quantity-controls span {
+    display: inline-block;
+    width: 40px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 16px;
+}
+
+.total-amount {
+    width: 30%;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.total-amount h2 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.total-amount ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.total-amount ul li {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.total-amount h3 {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+    color: #888;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 모든 DOM 관련 작업을 여기에서 처리합니다.
+        initializeSelectAllCheckbox();
+        initializeQuantityControls();
+    });
+
+    function initializeSelectAllCheckbox() {
+        document.getElementById('select-all').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('input[name="selected_items"]');
+            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+        });
+    }
+
+    function initializeQuantityControls() {
+        document.querySelectorAll('.quantity-controls button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const form = this.closest('form');
+                const quantitySpan = form.querySelector('.quantity');
+                let currentQuantity = parseInt(quantitySpan.textContent);
+                if (this.getAttribute('value') === 'increase') {
+                    quantitySpan.textContent = currentQuantity + 1;
+                } else if (this.getAttribute('value') === 'decrease' && currentQuantity > 1) {
+                    quantitySpan.textContent = currentQuantity - 1;
+                }
+                form.submit(); // 수량을 서버에 전송
+            });
+        });
+    }
+
+</script>
+
+{% endblock %}

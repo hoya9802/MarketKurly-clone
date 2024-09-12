@@ -78,14 +78,14 @@
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'wishlist:wishlist_list' %}">
                             <!--장고 템플릿 정식 작업 때 사용-->
                             <!-- <img src="{% static 'img/heart-icon.png' %}" alt="Wishlist" style="height: 20px;"> -->
                             <img src="{% static 'img/wish.svg' %}" style="width: 30px;">
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'cart:cart_list' %}">
                             <!--장고 템플릿 정식 작업 때 사용-->
                             <!-- <img src="{% static 'img/cart-icon.png' %}" alt="Cart" style="height: 20px;"> -->
                             <img src="{% static 'img/cart.svg' %}" style="width: 30px;">

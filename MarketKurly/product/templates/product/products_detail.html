@@ -39,8 +39,8 @@
         <p>판매자&emsp;{{object.owner}}</p>
         <p>{{ object.description }}</p>
         <div class="container-fluid">
-            <a class="btn btn-outline-secondary" href="#" role="button"><i class="fa-regular fa-heart" style="color: #B197FC;"></i></a>&emsp;
-            <a class="btn custom-btn" href="#" role="button">장바구니 담기</a>
+            <a class="btn btn-outline-secondary" href="{% url 'wishlist:add_to_wishlist' object.id %}" role="button"><i class="fa-regular fa-heart" style="color: #B197FC;"></i></a>&emsp;
+            <a class="btn custom-btn" href="{% url 'cart:add_to_cart' object.id %}" role="button">장바구니 담기</a>
         </div>
     </ul>
 </div>

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "product.apps.ProductConfig",
+    "cart.apps.CartConfig",
+    "wishlist.apps.WishlistConfig",
     "users",
 ]
 
