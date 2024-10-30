@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <header class="page-header">
-    <h1>User님의 찜리스트</h1>
+    <h1>{{request.user.username}}님의 찜리스트</h1>
 </header>
 
 <div class="container">
@@ -15,12 +15,13 @@
                 <div class="item-details">
                     <div class="item-name">{{ item.product.name }}</div>
                     <div class="item-price">{{ item.product.price|floatformat:0 }}원</div>
+                    <div class="item-description">{{ item.product.description|slice:":100" }}...</div> <!-- 설명 추가 -->
                 </div>
             </div>
             <div class="item-actions">
                 <form method="post" action="{% url 'wishlist:remove' item.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="button remove-button">삭제</button>
+                    <button type="submit" class="remove-button">삭제</button>
                 </form>
                 <form method="post" action="{% url 'cart:add_to_cart' item.product.id %}">
                     {% csrf_token %}
@@ -82,8 +83,11 @@
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         border: 1px solid #ddd;
-        width: 600px; /* 박스 크기 조정 */
+        width: 500px; /* 박스 크기 조정 */
+        transition: transform 0.2s;
+        margin-left: 20px; /* 왼쪽으로 이동 */
     }
+
     
     .item-info {
         display: flex;
@@ -92,10 +96,11 @@
     }
     
     .item-image {
-        width: 150px; /* 이미지 크기 조정 */
-        height: 150px;
+        width: 100px; /* 이미지 크기 조정 */
+        height: 70px;
         border-radius: 5px;
         margin-right: 15px;
+        object-fit: cover; /* 이미지 비율 유지 */
     }
     
     .item-details {
@@ -107,11 +112,18 @@
     .item-name {
         font-size: 16px;
         margin-bottom: 5px;
+        color: #333;
     }
     
     .item-price {
         font-size: 14px;
         color: #888;
+    }
+
+    .item-description {
+        font-size: 12px; /* 설명 글자 크기 */
+        color: #666;
+        margin-top: 5px; /* 설명과 가격 간의 간격 */
     }
     
     .item-actions {
@@ -135,15 +147,16 @@
         gap: 5px;
     }
     
-    .remove-button {
-        background-color: white;
-        color: black;
-    }
-    
     .remove-button:hover {
         background-color: #f0f0f0;
+        transform: translateY(-1px);
     }
-    
+
+    .add-to-cart-button:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-1px);
+    }
+
     .add-to-cart-button {
         display: flex;
         align-items: center;
@@ -161,7 +174,6 @@
         font-size: 18px;
         color: #888;
     }
-    </style>
-    
+</style>
 
 {% endblock %}

@@ -3,6 +3,9 @@ from django.urls import reverse
 from .models import Wishlist
 from product.models import Products
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def wishlist_list(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request, 'wishlist/wishlist.html', {

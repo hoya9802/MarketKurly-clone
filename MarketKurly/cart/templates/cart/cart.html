@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <header class="page-header">
-    <h1>장바구니</h1>
+    <h1>{{request.user.username}}님의 장바구니</h1>
 </header>
 
 <div class="container">
@@ -17,10 +17,10 @@
                 </div>
                 <button type="submit" id="delete-selected" name="delete_selected" class="delete-selected">전체삭제</button>
             </div>
-
+        
             {% if cart_items %}
             {% for item in cart_items %}
-            <div class="item">
+            <div class="item" data-id="{{ item.id }}" data-price="{{ item.product.price }}">
                 <div class="item-header">
                     <input type="checkbox" name="selected_items" value="{{ item.id }}" class="item-checkbox">
                     <div class="item-name">{{ item.product.name }}</div>
@@ -30,12 +30,9 @@
                     <div class="item-info">
                         <div class="item-price">{{ item.product.price }}원</div>
                         <div class="quantity-controls">
-                            <form method="post" action="{% url 'cart:update_quantity' item.id %}">
-                                {% csrf_token %}
-                                <button type="submit" name="action" value="decrease">-</button>
-                                <span class="quantity">{{ item.quantity }}</span>
-                                <button type="submit" name="action" value="increase">+</button>
-                            </form>
+                            <button type="button" class="decrease-btn">-</button>
+                            <span class="quantity">{{ item.quantity }}</span>
+                            <button type="button" class="increase-btn">+</button>
                         </div>
                     </div>
                 </div>
@@ -53,12 +50,18 @@
         <h2>총금액</h2>
         <ul>
             {% for item in cart_items %}
-            <li>{{ item.product.name }} <p></p> {{ item.product.price }}원 x {{ item.quantity }} = {{ item.total_price }}원</li>
+            <li data-id="{{item.id}}">
+                {{ item.product.name }} 
+                <span class="item-price" data-price="{{ item.product.price }}">{{ item.product.price }}</span>원 x 
+                <span class="quantity">{{ item.quantity }}</span> = 
+                <span class="total-price">{{ item.total_price }}원</span>
+            </li>
             {% endfor %}
         </ul>
-        <h3>총합계: {{ total_price }}원</h3>
+        <h3 style="border-top: 2px solid #0000; padding-top:10px;">총합계: <span id="total-price">{{ total_price }}원</span></h3>
     </div>
 </div>
+
 
 <style>
 /* General styles */
@@ -108,6 +111,10 @@ body {
     gap: 10px;
 }
 
+.select-all:hover{
+    transform: translateY(-1px);
+}
+
 .select-all label {
     font-size: 16px;
 }
@@ -132,6 +139,7 @@ body {
 
 .delete-selected:hover {
     background-color: #f0f0f0;
+    transform: translateY(-1px);
 }
 
 .item {
@@ -204,6 +212,10 @@ body {
     color: #333;
     margin: 0 5px;
 }
+.quantity-controls button:hover{
+    background-color: #f0f0f0;
+    transform: translateY(-1px);
+}
 
 .quantity-controls span {
     display: inline-block;
@@ -242,7 +254,7 @@ body {
 .total-amount h3 {
     margin-top: 20px;
     font-size: 18px;
-    color: #333;
+    color: #000;
 }
 
 .empty-cart {
@@ -255,34 +267,105 @@ body {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 모든 DOM 관련 작업을 여기에서 처리합니다.
+        // 페이지 로드 시 모든 기능 초기화
         initializeSelectAllCheckbox();
         initializeQuantityControls();
+        initializeDeleteButton();
+        updateTotalAmount();
     });
+    
+    // 수량 조절 버튼에 대한 기능 정의
+    function initializeQuantityControls() {
+        document.querySelectorAll('.quantity-controls button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+    
+                const quantitySpan = this.parentNode.querySelector('.quantity');
+                let currentQuantity = parseInt(quantitySpan.textContent, 10);
+    
+                // 수량 증감 처리 (0 이하가 되지 않도록 유효성 검사 추가)
+                if (this.classList.contains('increase-btn')) {
+                    currentQuantity += 1;
+                } else if (this.classList.contains('decrease-btn') && currentQuantity > 1) {
+                    currentQuantity -= 1;
+                }
+    
+                // 업데이트된 수량 반영
+                quantitySpan.textContent = currentQuantity;
 
+    
+                // 해당 아이템의 가격 및 총 금액 업데이트
+                updateTotalAmount();
+                form.submit();
+            });
+        });
+    }
+    
+    // 전체 총합계를 계산하고 업데이트하는 함수
+    function updateTotalAmount() {
+        let totalAmount = 0;
+    
+        document.querySelectorAll('.item').forEach(item => {
+            const quantityElement = item.querySelector('.quantity');
+            const quantity = parseInt(item.querySelector('.quantity').textContent, 10);
+            const itemPrice = parseFloat(item.dataset.price);
+            if (!isNaN(quantity) && !isNaN(itemPrice)) {
+                // 유효한 수량과 가격이 있는지 확인
+                const itemTotalPrice = quantity * itemPrice;
+                
+                // 전체 총합에 해당 항목의 총 금액을 더함
+                totalAmount += itemTotalPrice;
+
+                // total-price 업데이트
+                const totalItemPriceElement = item.querySelector('.total-price');
+                if (totalItemPriceElement) {
+                    totalItemPriceElement.textContent = `${itemTotalPrice.toFixed(0)}원`;
+                }
+
+                // total-amount 내 수량 업데이트 (필요시)
+                const totalItemQuantityElement = document.querySelector(
+                    `.total-amount li[data-id="${item.dataset.id}"] .quantity`
+                );
+                if (totalItemQuantityElement) {
+                    totalItemQuantityElement.textContent = quantity;
+                }
+
+                // total-amount 내 총 가격 업데이트
+                const totalItemTotalPriceElement = document.querySelector(
+                    `.total-amount li[data-id="${item.dataset.id}"] .total-price`
+                );
+                if (totalItemTotalPriceElement) {
+                    totalItemTotalPriceElement.textContent = `${itemTotalPrice.toFixed(0)}원`;
+                }
+            }
+        });
+    
+        // 총합계 금액을 업데이트
+        document.querySelector('#total-price').textContent = `${totalAmount.toFixed(0)}원`;
+    }
+    
+    // 전체 선택/해제 체크박스 초기화
     function initializeSelectAllCheckbox() {
-        document.getElementById('select-all').addEventListener('change', function() {
+        const selectAllCheckbox = document.getElementById('select-all');
+        selectAllCheckbox.addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('input[name="selected_items"]');
             checkboxes.forEach(checkbox => checkbox.checked = this.checked);
         });
     }
-
-    function initializeQuantityControls() {
-        document.querySelectorAll('.quantity-controls button').forEach(button => {
-            button.addEventListener('click', function(event) {
+    
+    // 선택된 항목 삭제 버튼 초기화
+    function initializeDeleteButton() {
+        document.getElementById('delete-selected').addEventListener('click', function(event) {
+            event.preventDefault();
+            const selectedItems = document.querySelectorAll('input[name="selected_items"]:checked');
+    
+            if (selectedItems.length > 0) {
                 const form = this.closest('form');
-                const quantitySpan = form.querySelector('.quantity');
-                let currentQuantity = parseInt(quantitySpan.textContent);
-                if (this.getAttribute('value') === 'increase') {
-                    quantitySpan.textContent = currentQuantity + 1;
-                } else if (this.getAttribute('value') === 'decrease' && currentQuantity > 1) {
-                    quantitySpan.textContent = currentQuantity - 1;
-                }
-                form.submit(); // 수량을 서버에 전송
-            });
+                form.submit();
+            } 
         });
     }
-
 </script>
+
 
 {% endblock %}
