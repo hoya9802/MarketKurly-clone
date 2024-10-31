@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+{% if user.is_authenticated %}
+<span style="margin-top: 7px;">{{user.username}}님 환영합니다!</span>
+<li class="nav-item">
+ 
+    <a class="nav-link" href="#">회원정보</a>
+</li>
+<div class="signup_child">
+  아이디: {{user.username}}
+   <br>
+  이메일: {{user.email}}
+   <br>
+  이름: {{user.last_name}} {{users_user.first_name}}
+   <br>
+  성별: {{user.gender}}
+   <br>
+  생일: {{user.birth}}
+   <br>
+  비고: {{user.short_description}} 
+</div>  
+{% endif %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+<div class ="wrapper1">
+    
+<div class="container1">
+    <form method="post" action="{% url 'users:login' %}">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <h2 style="color:gray">로그인</h2>
+            <hr>
+            <label for="username">아이디</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="username">이메일</label>
+            <input type="text" class="form-control" name="email" id="email"
+                   value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="password">비밀번호</label>
+            <input type="password" class="form-control" name="password" id="password"
+                   value="{{ form.password.value|default_if_none:'' }}">
+        </div>
+        <button type="submit" class="btn text-white" style="background-color:purple">로그인</button>
+        <br>
+        <hr>
+        <button type="submit" class="btn text-white" style="background-color:purple">회원가입</button>
+        <br>
+        <br>
+        
+        {% include "form_errors.html" %}
+    </form>
+</div>
+</div>
+<style>
+
+   .wrapper1 {
+       margin-top: 150px;
+       display: flex;
+       justify-content: center;
+       align-items: center; 
+   }
+   .container1 {   
+       font-family: arial;
+       font-size: 20px;
+       margin: 5px;
+       width: 430px;
+       height: 460px;
+       outline: solid 3px rgb(240, 239, 239);
+       text-align: center;
+       padding: 25px;
+   }
+   .child {
+       font-family: arial;
+       font-size: 20px;
+       margin: 25px;
+       width: 300px;
+       height: 100px;
+       text-align: right;
+   }
+   .login_button {
+       background-color: #5F0080;
+       color: white;   
+   }
+</style>
+
+{% endblock %}

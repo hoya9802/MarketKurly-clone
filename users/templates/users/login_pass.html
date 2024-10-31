@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+
+{% if user.is_authenticated %}
+<span style="margin-top: 7px;">{{user.username}}님 환영합니다!</span>
+<li class="nav-item">
+ 
+    <a class="nav-link" href="#">회원정보</a>
+</li>
+<div class="signup_child">
+  아이디: {{user.username}}
+   <br>
+  이메일: {{user.email}}
+   <br>
+  이름: {{user.last_name}} {{users_user.first_name}}
+   <br>
+  성별: {{user.gender}}
+   <br>
+  생일: {{user.birth}}
+   <br>
+  비고: {{user.short_description}} 
+</div>  
+{% endif %}
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+<div class ="wrapper1">
+    
+<div class="container1">
+    <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+        <span style="margin-top: 7px;">{{user.username}}님 환영합니다!</span>
+        <li class="nav-item">
+         
+            <a class="nav-link" href="#">회원정보</a>
+        </li>
+        <div class="signup_child">
+          아이디: {{user.username}}
+           <br>
+          이메일: {{user.email}}
+           <br>
+          이름: {{user.last_name}} {{users_user.first_name}}
+           <br>
+          성별: {{user.gender}}
+           <br>
+          생일: {{user.birth}}
+           <br>
+          비고: {{user.short_description}} 
+        </div>  
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="#">회원정보수정</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:login' %}">회원정보삭제</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'users:login' %}">회원탈퇴</a>
+        </li>
+         
+   </div>
+</div>
+<style>
+
+   .wrapper1 {
+       margin-top: 150px;
+       display: flex;
+       justify-content: center;
+       align-items: center; 
+   }
+   .container1 {   
+       font-family: arial;
+       font-size: 20px;
+       margin: 5px;
+       width: 430px;
+       height: 460px;
+       outline: solid 3px rgb(240, 239, 239);
+       text-align: center;
+       padding: 25px;
+   }
+   
+   .signup_child {
+            padding-left: 100px;
+            text-align: left;
+        }
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+
+
+
+<div class="wrapper1">
+    <div class="container1">
+
+    회원정보페이지
+    <br>
+    <br>
+    {{ user.username }}님 정보 페이지
+    <br>
+    email:{{ user.email}}
+    <br>
+    성명:
+    {{ user.last_name }}
+    {{ user.first_name }}
+    <br>
+    성별:{{ user.gender }}  (예:['O':기타] )    
+    <br>
+    생년월일:{{ user.birth }}
+    <br>
+
+    <a href="{% url 'users:logout' %}">로그아웃</a>
+
+    </div>
+</div>
+  
+<style>
+
+    .wrapper1 {
+        margin-top: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+    }
+    .container1 {   
+        font-family: arial;
+        font-size: 20px;
+        margin: 5px;
+        width: 430px;
+        height: 460px;
+        outline: solid 3px rgb(240, 239, 239);
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .signup_child {
+             padding-left: 100px;
+             text-align: left;
+         }
+ 
+ </style>
+
+{% endblock %}
